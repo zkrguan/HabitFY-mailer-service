@@ -10,9 +10,8 @@ async function postSendEmail(req: Request, res: Response) {
         res.status(201).send('email sent!!!');
     }
     catch(e){
-        console.log(e);
-        console.log(process.env.GMAIL_ADDRESS) 
-        console.log(process.env.GMAIL_TOKEN), 
+        console.error(`The node mailer exceptions`)
+        console.error(e);
         res.status(500).send(`email sent failed!`);
     }
 }
