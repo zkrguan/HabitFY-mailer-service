@@ -1,5 +1,5 @@
 import { transporter } from "../configs/email.config";
-import { badAssTemplate } from "../template/email-template";
+import { badAssTemplate, professionalTemplate } from "../template/email-template";
 
 export const sendMailWithOptions = (
     options: { to: string, subject: string, text: string }
@@ -9,7 +9,7 @@ export const sendMailWithOptions = (
 			{
 				to:options.to,
 				subject:options.subject,
-				html:badAssTemplate
+				html:professionalTemplate
 			}, 
 			(error:any, info:any) => {
 				if (error) {
