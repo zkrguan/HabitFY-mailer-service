@@ -1,10 +1,11 @@
 import dotenv from 'dotenv';
-dotenv.config();
+import path from 'path'
+dotenv.config({path:path.resolve(__dirname, '.env')});
 import express, { Express, Request, Response , Application } from 'express';
 import emailRoute from './routes/email'
-
-const app: Application = express();
 const port = process.env.PORT || 8090;
+const app: Application = express();
+app.use(express.json()); 
 
 app.use('/api',emailRoute);
 
