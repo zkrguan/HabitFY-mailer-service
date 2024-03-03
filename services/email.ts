@@ -5,27 +5,33 @@ import { PrismaClient } from '@prisma/client'
 // https://www.prisma.io/docs/getting-started/setup-prisma/add-to-existing-project/relational-databases/introspection-typescript-postgresql
 const prisma = new PrismaClient();
 
-export const prepEmailList=async()=>{
+export const testService = async ()=>{
+    return await prepEmailList()
+}
+
+const prepEmailList=async()=>{
 	const resultList : EmailOption[] = [] as EmailOption[]; 
 	const userResult = await prisma.userprofiles.findMany({});
 	for (let user of userResult){
-		const detailList : GoalDetail[] = [] as GoalDetail[];
-		const result = await prisma.goals.findMany({
-			where:{ProfileId: user.Id}
-		})
-		if(result.length){
-			// prep the goal detail inside this loop
-			for (let goal of result){
-				detailList.push({
-					description:goal.Description,
-					targetAmount:goal.GoalValue,
-				})
+		if(user.EmailAddress){
+			const detailList : GoalDetail[] = [] as GoalDetail[];
+			const result = await prisma.goals.findMany({
+				where:{ProfileId: user.Id}
+			})
+			if(result.length){
+				// prep the goal detail inside this loop
+				for (let goal of result){
+					detailList.push({
+						description:goal.Description,
+						targetAmount:goal.GoalValue,
+					})
+				}
 			}
+			resultList.push({
+				to: user.EmailAddress,
+				detail:detailList,
+			})
 		}
-		resultList.push({
-			to:"Fake email",
-			detail:detailList,
-		})
 	}
 	return resultList;
 }

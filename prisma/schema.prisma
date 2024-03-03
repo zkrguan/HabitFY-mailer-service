@@ -44,12 +44,13 @@ model ProgressRecords {
 }
 
 model Userprofiles {
-  Id         String  @id(map: "PK_Userprofiles") @db.NVarChar(450)
-  Sex        String? @db.NVarChar(Max)
-  Province   String? @db.NVarChar(Max)
-  City       String? @db.NVarChar(Max)
-  PostalCode String? @db.NVarChar(Max)
-  Age        Int?
-  NeedReport Boolean @default(dbgenerated("CONVERT([bit],(0))"), map: "DF__Userprofi__needR__6E01572D")
-  Goals      Goals[]
+  Id           String  @id(map: "PK_Userprofiles") @db.NVarChar(450)
+  Sex          String? @db.NVarChar(Max)
+  Province     String? @db.NVarChar(Max)
+  City         String? @db.NVarChar(Max)
+  PostalCode   String? @db.NVarChar(Max)
+  Age          Int?
+  NeedReport   Boolean @default(dbgenerated("CONVERT([bit],(0))"), map: "DF__Userprofi__needR__6E01572D")
+  EmailAddress String  @default("N'", map: "DF__Userprofi__Email__14270015") @db.NVarChar(Max)
+  Goals        Goals[]
 }
