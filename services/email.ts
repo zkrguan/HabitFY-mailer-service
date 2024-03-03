@@ -7,7 +7,16 @@ import { Prisma, PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient();
 
 export const scheduleEmailService = async ()=>{
-    return await prepEmailList()
+	const result = await prepEmailList()
+	for (let email of result){
+		await sendMailWithOptions(
+			{
+				to:email.to,
+				subject:"Are you giving up on your goals?",
+				details:email.detail // missing the text processing logics here
+			}
+		)
+	}
 }
 
 
@@ -44,7 +53,7 @@ const prepEmailList=async()=>{
 }
 
 export const sendMailWithOptions = (
-    options: { to: string, subject: string, text: string }
+    options: { to: string, subject: string, details: GoalDetail[]}
 ) => {
 	return new Promise((resolve, rejects) => {
 		transporter.sendMail(

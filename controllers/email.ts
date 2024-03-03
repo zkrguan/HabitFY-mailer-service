@@ -6,7 +6,7 @@ import{sendMailWithOptions} from '../services/email'
 async function postSendEmail(req: Request, res: Response) {
     const {options} = req.body;
     try{
-        await sendMailWithOptions({to:options.to,subject:options.subject,text:options.body});
+        await sendMailWithOptions({to:options.to,subject:options.subject,details:[]});
         res.status(201).send('email sent!!!');
     }
     catch(e){
