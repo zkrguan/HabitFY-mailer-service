@@ -1,37 +1,44 @@
 import { transporter } from "../configs/email.config";
 import { EmailOption, GoalDetail } from "../interface/EmailOption.interface";
 import { badAssTemplate, professionalTemplate } from "../template/email-template";
-import { PrismaClient } from '@prisma/client'
+import { Prisma, PrismaClient } from '@prisma/client'
+
 // https://www.prisma.io/docs/getting-started/setup-prisma/add-to-existing-project/relational-databases/introspection-typescript-postgresql
 const prisma = new PrismaClient();
 
-export const testService = async ()=>{
+export const scheduleEmailService = async ()=>{
     return await prepEmailList()
 }
 
+
 const prepEmailList=async()=>{
 	const resultList : EmailOption[] = [] as EmailOption[]; 
-	const userResult = await prisma.userprofiles.findMany({});
-	for (let user of userResult){
-		if(user.EmailAddress){
-			const detailList : GoalDetail[] = [] as GoalDetail[];
-			const result = await prisma.goals.findMany({
-				where:{ProfileId: user.Id}
-			})
-			if(result.length){
-				// prep the goal detail inside this loop
-				for (let goal of result){
-					detailList.push({
-						description:goal.Description,
-						targetAmount:goal.GoalValue,
-					})
-				}
-			}
-			resultList.push({
-				to: user.EmailAddress,
-				detail:detailList,
-			})
+	// DB still have some testing data which is dirty
+	const userResult = await prisma.userprofiles.findMany({
+		where: {
+		  EmailAddress: {
+			not:""
+		  }
 		}
+	  });
+	for (let user of userResult){
+		const detailList : GoalDetail[] = [] as GoalDetail[];
+		const result = await prisma.goals.findMany({
+			where:{ProfileId: user.Id}
+		})
+		if(result.length){
+			// prep the goal detail inside this loop
+			for (let goal of result){
+				detailList.push({
+					description:goal.Description,
+					targetAmount:goal.GoalValue,
+				})
+			}
+		}
+		resultList.push({
+			to: user.EmailAddress,
+			detail:detailList,
+		})
 	}
 	return resultList;
 }

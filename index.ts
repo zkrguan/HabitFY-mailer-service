@@ -4,12 +4,15 @@ dotenv.config({path:path.resolve(__dirname, '.env')});
 import express, { Express, Request, Response , Application } from 'express';
 import emailRoute from './routes/email'
 import cors from 'cors'
+import {wireUpScheudledTask} from './timed-task/email'
+
 const port = process.env.PORT || 8090;
 const app: Application = express();
 app.use(cors());
 app.use(express.json()); 
-app.use('/api',emailRoute);
+wireUpScheudledTask();
 
+app.use('/api',emailRoute);
 app.get('/', (req: Request, res: Response) => {
   res.send('A boring health check.');
 });
