@@ -1,4 +1,5 @@
 import { transporter } from "../configs/email.config";
+import { logger } from "../configs/winston.config";
 import { EmailOption, GoalDetail } from "../interface/EmailOption.interface";
 import { badAssTemplate, professionalTemplate } from "../template/email-template";
 import { Prisma, PrismaClient } from '@prisma/client'
@@ -12,7 +13,7 @@ export const scheduleEmailService = async ()=>{
 		await sendMailWithOptions(
 			{
 				to:email.to,
-				subject:"Are you giving up on your goals?",
+				subject:"HabitFY daily morning digest ☀️😊",
 				details:email.detail // missing the text processing logics here
 			}
 		)
@@ -60,18 +61,18 @@ export const sendMailWithOptions = (
 			{
 				to:options.to,
 				subject:options.subject,
-				html:professionalTemplate
+				html:professionalTemplate(options.details)
 			}, 
 			(error:any, info:any) => {
 				if (error) {
-					console.error(
+					logger.error(
 						`Exception happened inside the node mailer module, sendMailWithOptions function`
 					);
-					console.error(error);
+					logger.error(error);
 					rejects(error);
 				} else {
-					console.log(`Receipt accepted ` + info.accepted);
-					console.log(`Response code ` + info.response);
+					logger.http(`Receipt accepted ` + info.accepted);
+					logger.http(`Response code ` + info.response);
 					resolve(info);
 				}
 			}
