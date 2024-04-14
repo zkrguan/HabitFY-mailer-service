@@ -24,13 +24,24 @@ export const scheduleEmailService = async ()=>{
 const prepEmailList=async()=>{
 	const resultList : EmailOption[] = [] as EmailOption[]; 
 	// DB still have some testing data which is dirty
-	const userResult = await prisma.userprofiles.findMany({
-		where: {
-		  EmailAddress: {
-			not:""
-		  }
+	let userResult:any[] =[];
+	try{
+		 userResult= await prisma.userprofiles.findMany({
+			where: {
+			  EmailAddress: {
+				not:""
+			  }
+			}
+		  });
+	}
+	catch(error){
+		const wait =(ms:number)=> {
+			return new Promise(resolve => setTimeout(resolve, ms));
 		}
-	  });
+		// Our sql db needs 2 mins warm up...
+		// You cannot directly connect to it... like heroku app
+		await wait(60 * 1000 * 2); 
+	}
 	for (let user of userResult){
 		const detailList : GoalDetail[] = [] as GoalDetail[];
 		const result = await prisma.goals.findMany({
